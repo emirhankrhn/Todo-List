@@ -1,5 +1,7 @@
-import { StyleSheet, Text, View, Button , TextInput } from'react-native';
+import { StyleSheet, Text, View, Button , TextInput, FlatList } from'react-native';
+import React, { useState } from'react';
 import { SafeAreaView } from'react-native-safe-area-context';
+import TodoItem from'./components/TodoItem';
 export default function App() {
 
 const [enteredTaskText, setEnteredTaskText] = useState('');
@@ -32,6 +34,16 @@ return (
 <View style={styles.contentContainer}>
 <Text style={styles.title}>Yapılacaklar Listem</Text>
 <View style={styles.inputContainer}>
+<View style = {styles.listContainer}>
+    <FlatList
+    data={tasks}
+    renderItem={(itemData) => {
+        return <TodoItem text={itemData.item.text} />;
+    }}
+    keyExtractor={(item) => item.id}
+    ListEmptyComponent={<Text style= {styles.emptyText}> Henüz eklenmiş görev yok </Text>}
+    />
+</View>    
 <TextInput
 style={styles.textInput}
 placeholder="Yeni bir görev ekle..."
@@ -41,7 +53,7 @@ value={enteredTaskText} // Değeri state'e bağla
 </View>
 <Button title="Ekle" onPress={addTaskHandler} />
 
-{/* Liste alanı buraya gelecek */}
+
 </View>
 </SafeAreaView>
 );
@@ -83,4 +95,14 @@ borderRadius: 6,
 marginRight: 10,
 fontSize: 16,
 },
+listContainer: {
+    flex: 5 , 
+},
+emptyText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
+    color: '#888',
+},
+
 });
