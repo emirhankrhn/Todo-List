@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button , TextInput, FlatList } from'react-native';
+import { StyleSheet, Text, View, Button , TextInput, FlatList , Keyboard, KeyboardAvoidingView, Platform} from'react-native';
 import React, { useState } from'react';
 import { SafeAreaView } from'react-native-safe-area-context';
 import TodoItem from'./components/TodoItem';
@@ -13,6 +13,12 @@ const taskInputHandler = (enteredText) => {
 setEnteredTaskText(enteredText);
 };
 
+function deleteTaskHandler(id) {
+setTasks((currentTasks) => {
+return currentTasks.filter((task) => task.id !== id);
+});
+}
+
 function addTaskHandler() {
 
     if (enteredTaskText.trim().length === 0) {
@@ -23,6 +29,7 @@ function addTaskHandler() {
         { id: Math.random().toString(), text: enteredTaskText }
     ]);
     setEnteredTaskText('');
+    Keyboard.dismiss();
 
     
 }
@@ -31,16 +38,25 @@ function addTaskHandler() {
 
 return (
 <SafeAreaView style={styles.appContainer}>
+ <KeyboardAvoidingView
+style={styles.contentContainer}
+behavior={Platform.OS=== 'ios' ? 'padding' : 'height'}
+>
+
 <View style={styles.contentContainer}>
 <Text style={styles.title}>Yapılacaklar Listem</Text>
 <View style={styles.inputContainer}>
-<View style = {styles.listContainer}>
-    <FlatList
-    data={tasks}
-    renderItem={(itemData) => {
-        return <TodoItem text={itemData.item.text} />;
-    }}
-    keyExtractor={(item) => item.id}
+<View style={styles.listContainer}>
+          <FlatList
+            data={tasks}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <TodoItem
+                text={item.text}
+                id={item.id}
+                onDelete={deleteTaskHandler} // ✅ Silme fonksiyonu burada gönderiliyor
+              />
+            )}
     ListEmptyComponent={<Text style= {styles.emptyText}> Henüz eklenmiş görev yok </Text>}
     />
 </View>    
@@ -55,7 +71,9 @@ value={enteredTaskText} // Değeri state'e bağla
 
 
 </View>
+</KeyboardAvoidingView>
 </SafeAreaView>
+
 );
 }
 const styles= StyleSheet.create({

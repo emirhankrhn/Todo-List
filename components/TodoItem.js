@@ -1,9 +1,21 @@
-import { StyleSheet, Text, View } from'react-native';
-export default function TodoItem({ text }) {
+import { StyleSheet, Text, View, Pressable } from'react-native';
+export default function TodoItem({ text, id, onDelete }) {
 return (
-<View style={styles.taskItem}>
-<Text style={styles.taskText}>{text}</Text>
-</View>
+  <View>
+    <View style={styles.taskItem}>
+      <Text style={styles.taskText}>{text}</Text>
+    </View>
+
+    <Pressable
+      onPress={() => onDelete(id)}
+      style={({ pressed }) => [
+        styles.taskItem,
+        pressed && styles.pressedItem,
+      ]}
+    >
+      <Text style={styles.taskText}>{text}</Text>
+    </Pressable>
+  </View>
 );
 }
 const styles= StyleSheet.create({
@@ -21,5 +33,9 @@ shadowRadius: 2,
 },
 taskText: {
 fontSize: 16,
+},
+pressedItem: {
+opacity: 0.5,
+backgroundColor: '#dddddd',
 },
 });
